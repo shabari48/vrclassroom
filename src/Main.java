@@ -1,11 +1,23 @@
 import java.util.List;
 import java.util.Scanner;
+import java.util.logging.Logger;
+import java.util.logging.Level;
+import java.util.logging.FileHandler;
+import java.util.logging.SimpleFormatter;
 
-public class VirtualClassroomManager {
+public class Main {
     private static final Scanner scanner = new Scanner(System.in);
+    private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
 
     public static void main(String[] args) {
+        setupLogger();
+        LOGGER.info("Virtual Classroom Manager started");
+
         boolean running = true;
+
+        // Application's Main Menu which contains all the functionalities.
+        // Users can choose from the available functionalities
+
         while (running) {
             System.out.println("\nVirtual Classroom Manager");
             System.out.println("1. Add Classroom");
@@ -49,31 +61,57 @@ public class VirtualClassroomManager {
                     default:
                         System.out.println("Invalid choice. Please try again.");
                 }
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid input. Please enter a number.");
+            }
+             // Handling errors that may arise during getting user input
+            catch (NumberFormatException e) {
+                LOGGER.warning("Invalid input. Please enter a number.");
             } catch (IllegalArgumentException e) {
-                System.out.println("Error: " + e.getMessage());
+                LOGGER.warning("Error: " + e.getMessage());
             } catch (Exception e) {
-                System.out.println("An unexpected error occurred: " + e.getMessage());
+                LOGGER.warning("An unexpected error occurred: " + e.getMessage());
             }
 
             System.out.println("\nPress Enter to continue...");
             scanner.nextLine();
         }
+        LOGGER.info("Virtual Classroom Manager stopped");
     }
+
+    private static void setupLogger() {
+        try {
+            FileHandler fileHandler = new FileHandler("virtual_classroom.log", true);
+            SimpleFormatter formatter = new SimpleFormatter();
+            fileHandler.setFormatter(formatter);
+            LOGGER.addHandler(fileHandler);
+            LOGGER.setLevel(Level.ALL);
+        } catch (Exception e) {
+            System.err.println("Error setting up logger: " + e.getMessage());
+        }
+    }
+
+    //  ClassroomManager.getInstance()  -> returns the only Classroom Manager Object
+    //  Handles all functionalities in the application
+
+    //  addClassroom,removeClassroom,listClassrooms,
+    //  enrollStudent,listStudentsInClassroom.
+    //  scheduleAssignment,submitAssignment
+
 
     private static void addClassroom() {
         System.out.print("Enter classroom name: ");
         String name = scanner.nextLine();
-        ClassroomManager.getInstance().addClassroom(name);
-        System.out.println("Classroom '" + name + "' added successfully.");
+        try {
+            ClassroomManager.getInstance().addClassroom(name);
+        } catch (IllegalArgumentException e) {
+            LOGGER.warning("Failed to add classroom: " + e.getMessage());
+        }
     }
 
     private static void removeClassroom() {
         System.out.print("Enter classroom name to remove: ");
         String name = scanner.nextLine();
         ClassroomManager.getInstance().removeClassroom(name);
-        System.out.println("Classroom '" + name + "' removed successfully.");
+        LOGGER.info("Classroom removed: " + name);
     }
 
     private static void listClassrooms() {
@@ -84,7 +122,7 @@ public class VirtualClassroomManager {
                 System.out.println("- " + classroom);
             }
         } else {
-            System.out.println("No classrooms available.");
+            LOGGER.warning("No classrooms available.");
         }
     }
 
@@ -97,7 +135,7 @@ public class VirtualClassroomManager {
         String classroom = scanner.nextLine();
 
         ClassroomManager.getInstance().enrollStudent(id, name, classroom);
-        System.out.println("Student '" + name + "' (ID: " + id + ") enrolled in '" + classroom + "' successfully.");
+        LOGGER.info("Student '" + name + "' successfully enrolled in '" + classroom + "'.");
     }
 
     private static void listStudentsInClassroom() {
@@ -111,7 +149,7 @@ public class VirtualClassroomManager {
                 System.out.println("- ID: " + student.getId() + ", Name: " + student.getName());
             }
         } else {
-            System.out.println("No students enrolled in " + classroom + ".");
+            LOGGER.warning("No students enrolled in " + classroom + ".");
         }
     }
 
@@ -124,7 +162,7 @@ public class VirtualClassroomManager {
         String details = scanner.nextLine();
 
         ClassroomManager.getInstance().scheduleAssignment(classroom, name, details);
-        System.out.println("Assignment '" + name + "' scheduled for '" + classroom + "' successfully.");
+        LOGGER.info("Assignment '" + name + "' scheduled for '" + classroom + "' successfully.");
     }
 
     private static void submitAssignment() {
@@ -135,7 +173,11 @@ public class VirtualClassroomManager {
         System.out.print("Enter assignment name: ");
         String assignment = scanner.nextLine();
 
-        ClassroomManager.getInstance().submitAssignment(studentId, classroom, assignment);
-        System.out.println("Assignment submitted successfully.");
+        try {
+            ClassroomManager.getInstance().submitAssignment(studentId, classroom, assignment);
+            LOGGER.info("Assignment submitted: Student " + studentId + ", Classroom " + classroom + ", Assignment " + assignment);
+        } catch (IllegalArgumentException e) {
+            LOGGER.warning("Failed to submit assignment: " + e.getMessage());
+        }
     }
 }
