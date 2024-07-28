@@ -8,6 +8,22 @@ public class Main {
     private static final Scanner scanner = new Scanner(System.in);
     private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
 
+    /**
+     * The main function of the program, which serves as the entry point. It sets up the logger, prints welcome
+     * messages, and provides a list of available commands. It then enters a loop where it prompts the user for
+     * commands and executes them accordingly. The program continues to run until the user enters "exit". The
+     * available commands are:
+     * - add_classroom <class_name>: Adds a new classroom with the specified name.
+     * - add_student <student_id> <class_name>: Adds a new student to the specified classroom.
+     * - schedule_assignment <class_name> <assignment_details>: Schedules a new assignment for the specified
+     *   classroom.
+     * - submit_assignment <student_id> <class_name> <assignment_details>: Submits an assignment for the specified
+     *   student and classroom.
+     * - exit: Exits the program.
+     *
+     * @param  args  the command-line arguments passed to the program
+     */
+    
     public static void main(String[] args) {
         setupLogger();
         LOGGER.info("Virtual Classroom Manager started");
@@ -76,6 +92,17 @@ public class Main {
         }
     }
 
+    /**
+     * Sets up the logger for the application.
+     *
+     * This function creates a FileHandler to log messages to a file named "virtual_classroom.log".
+     * It also sets up a SimpleFormatter to format the log messages.
+     * The logger is then added to the FileHandler and the log level is set to Level.ALL.
+     *
+     * @throws Exception if there is an error setting up the logger
+     */
+    
+    
     private static void setupLogger() {
         try {
             FileHandler fileHandler = new FileHandler("virtual_classroom.log", true);
@@ -88,24 +115,51 @@ public class Main {
         }
     }
 
+    /**
+     * Adds a classroom with the given name.
+     *
+     * @param  name  the name of the classroom to be added
+     * @return       void
+     */
+    
     private static void addClassroom(String name) {
         ClassroomManager.getInstance().addClassroom(name);
         System.out.println("Classroom " + name + " has been created.");
         LOGGER.info("Classroom added: " + name);
     }
 
+    /**
+     * Adds a student to a classroom.
+     *
+     * @param  studentId  the ID of the student to be enrolled
+     * @param  className  the name of the classroom to enroll the student in
+     */
     private static void addStudent(String studentId, String className) {
         ClassroomManager.getInstance().enrollStudent(studentId, "Student " + studentId, className);
         System.out.println("Student " + studentId + " has been enrolled in " + className + ".");
         LOGGER.info("Student " + studentId + " enrolled in " + className);
     }
 
+    /**
+     * Schedules an assignment for a given classroom.
+     *
+     * @param  className          the name of the classroom to schedule the assignment for
+     * @param  assignmentDetails the details of the assignment to be scheduled
+     */
     private static void scheduleAssignment(String className, String assignmentDetails) {
         ClassroomManager.getInstance().scheduleAssignment(className, "Assignment", assignmentDetails);
         System.out.println("Assignment for " + className + " has been scheduled.");
         LOGGER.info("Assignment scheduled for " + className);
     }
-
+    
+    
+    /**
+     * Submits an assignment for a student in a given classroom.
+     *
+     * @param  studentId         the ID of the student submitting the assignment
+     * @param  className         the name of the classroom the assignment is for
+     * @param  assignmentDetails the details of the assignment being submitted
+     */
     private static void submitAssignment(String studentId, String className, String assignmentDetails) {
         ClassroomManager.getInstance().submitAssignment(studentId, className, "Assignment");
         System.out.println("Assignment submitted by Student " + studentId + " in " + className + ".");

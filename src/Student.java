@@ -8,6 +8,8 @@ public class Student {
         this.name = name;
     }
 
+     //Getters for returning the private attributes(name and id) of Student
+
     public String getId() {
         return id;
     }

@@ -7,10 +7,13 @@ public class Assignment {
         this.details = details;
     }
 
+    //Getters for returning the private attributes(name and details) of Assignment
+
     public String getName() {
         return name;
     }
 
+  
     public String getDetails() {
         return details;
     }
