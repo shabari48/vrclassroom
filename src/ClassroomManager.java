@@ -4,18 +4,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-
 public class ClassroomManager {
     private static final Logger LOGGER = Logger.getLogger(ClassroomManager.class.getName());
-    private static final ClassroomManager instance = new ClassroomManager();  //Singleton Instance
+    private static final ClassroomManager instance = new ClassroomManager();
     private final Map<String, Classroom> classrooms;
 
     private ClassroomManager() {
         classrooms = new HashMap<>();
         LOGGER.info("ClassroomManager initialized");
     }
-
-
 
     public static ClassroomManager getInstance() {
         return instance;
@@ -38,41 +35,17 @@ public class ClassroomManager {
         LOGGER.info("Classroom added: " + name);
     }
 
-    public void removeClassroom(String name) {
-        String upperCaseName = name.toUpperCase();
-        if (!classrooms.containsKey(upperCaseName)) {
-            LOGGER.warning("Attempt to remove non-existent  classroom: " + name);
-            throw new IllegalArgumentException("Classroom '" + name + "' does not exist.");
-        }
-
-        classrooms.remove(upperCaseName);
-    }
-
-    public List<String> listClassrooms() {
-        return new ArrayList<>(classrooms.keySet());
-    }
-
     public void enrollStudent(String studentId, String studentName, String classroomName) {
         String upperCaseClassroomName = classroomName.toUpperCase();
         Classroom classroom = classrooms.get(upperCaseClassroomName);
         if (classroom == null) {
-            LOGGER.warning("Attempt to enroll in non-existent  classroom: " + classroomName);
+            LOGGER.warning("Attempt to enroll in non-existent classroom: " + classroomName);
             throw new IllegalArgumentException("Classroom '" + classroomName + "' does not exist.");
         }
 
         Student student = new Student(studentId, studentName);
         classroom.addStudent(student);
-    }
-
-    public List<Student> listStudentsInClassroom(String classroomName) {
-        String upperCaseClassroomName = classroomName.toUpperCase();
-        Classroom classroom = classrooms.get(upperCaseClassroomName);
-        if (classroom == null) {
-            LOGGER.warning("Attempt to list students in non-existent classroom: " + classroomName);
-            throw new IllegalArgumentException("Classroom '" + classroomName + "' does not exist.");
-        }
-
-        return classroom.listStudents();
+        LOGGER.info("Student " + studentId + " enrolled in " + classroomName);
     }
 
     public void scheduleAssignment(String classroomName, String assignmentName, String assignmentDetails) {
@@ -85,8 +58,8 @@ public class ClassroomManager {
 
         Assignment assignment = new Assignment(assignmentName, assignmentDetails);
         classroom.addAssignment(assignment);
+        LOGGER.info("Assignment scheduled for " + classroomName);
     }
-
 
     public void submitAssignment(String studentId, String classroomName, String assignmentName) {
         String upperCaseClassroomName = classroomName.toUpperCase();
@@ -109,6 +82,5 @@ public class ClassroomManager {
         }
 
         LOGGER.info("Assignment '" + assignmentName + "' submitted by Student " + studentId + " in " + classroomName);
-        System.out.println("Assignment '" + assignmentName + "' submitted by Student " + studentId + " in " + classroomName + ".");
     }
 }

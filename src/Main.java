@@ -1,4 +1,3 @@
-import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Logger;
 import java.util.logging.Level;
@@ -13,68 +12,68 @@ public class Main {
         setupLogger();
         LOGGER.info("Virtual Classroom Manager started");
 
-        boolean running = true;
+        System.out.println("Welcome to Virtual Classroom Manager!");
+        System.out.println("Available commands:");
+        System.out.println("add_classroom <class_name>");
+        System.out.println("add_student <student_id> <class_name>");
+        System.out.println("schedule_assignment <class_name> <assignment_details>");
+        System.out.println("submit_assignment <student_id> <class_name> <assignment_details>");
+        System.out.println("exit");
 
-        // Application's Main Menu which contains all the functionalities.
-        // Users can choose from the available functionalities
-
-        while (running) {
-            System.out.println("\nVirtual Classroom Manager");
-            System.out.println("1. Add Classroom");
-            System.out.println("2. Remove Classroom");
-            System.out.println("3. List Classrooms");
-            System.out.println("4. Enroll Student");
-            System.out.println("5. List Students in Classroom");
-            System.out.println("6. Schedule Assignment");
-            System.out.println("7. Submit Assignment");
-            System.out.println("0. Exit");
-            System.out.print("Enter your choice: ");
+        while (true) {
+            System.out.print("\nEnter command: ");
+            String input = scanner.nextLine().trim();
+            String[] parts = input.split("\\s+", 3);
 
             try {
-                int choice = Integer.parseInt(scanner.nextLine());
-                switch (choice) {
-                    case 1:
-                        addClassroom();
+                switch (parts[0].toLowerCase()) {
+                    case "add_classroom":
+                        if (parts.length < 2) {
+                            LOGGER.warning("Classroom Manager requires at least 2 arguments");
+                            System.out.println("Invalid command. Usage: add_classroom <class_name>");
+                            break;
+                        }
+                        addClassroom(parts[1]);
                         break;
-                    case 2:
-                        removeClassroom();
+                    case "add_student":
+                        if (parts.length < 3) {
+                            LOGGER.warning(" Add Student requires at least 3 arguments");
+                            System.out.println("Invalid command. Usage: add_student <student_id> <class_name>");
+                            break;
+                        }
+                        addStudent(parts[1], parts[2]);
                         break;
-                    case 3:
-                        listClassrooms();
+                    case "schedule_assignment":
+                        if (parts.length < 3) {
+                            LOGGER.warning("Schedule Assignment requires at least 3 arguments");
+                            System.out.println("Invalid command. Usage: schedule_assignment <class_name> <assignment_details>");
+                            break;
+                        }
+                        scheduleAssignment(parts[1], parts[2]);
                         break;
-                    case 4:
-                        enrollStudent();
+                    case "submit_assignment":
+                        if (parts.length < 4) {
+                            LOGGER.warning("Submit Assignment requires at least 4 arguments");
+                            System.out.println("Invalid command. Usage: submit_assignment <student_id> <class_name> <assignment_details>");
+                            break;
+                        }
+                        submitAssignment(parts[1], parts[2], parts[3]);
                         break;
-                    case 5:
-                        listStudentsInClassroom();
-                        break;
-                    case 6:
-                        scheduleAssignment();
-                        break;
-                    case 7:
-                        submitAssignment();
-                        break;
-                    case 0:
-                        System.out.println("Exiting...");
-                        running=false;
-                        break;
+                    case "exit":
+                        System.out.println("Exiting Virtual Classroom Manager. Goodbye!");
+                        LOGGER.info("Virtual Classroom Manager stopped");
+                        return;
                     default:
-                        System.out.println("Invalid choice. Please try again.");
+                        System.out.println("Unknown command. Please try again.");
                 }
-            }
-             // Handling errors that may arise during getting user input
-            catch (NumberFormatException e) {
-                LOGGER.warning("Invalid input. Please enter a number.");
             } catch (IllegalArgumentException e) {
-                LOGGER.warning("Error: " + e.getMessage());
+                System.out.println("Error: " + e.getMessage());
+                LOGGER.warning(e.getMessage());
             } catch (Exception e) {
-                LOGGER.warning("An unexpected error occurred: " + e.getMessage());
+                System.out.println("An unexpected error occurred: " + e.getMessage());
+                LOGGER.severe("Unexpected error: " + e.getMessage());
             }
-
-            System.out.println("\nPress Enter to continue...");
-            scanner.nextLine();
         }
-        LOGGER.info("Virtual Classroom Manager stopped");
     }
 
     private static void setupLogger() {
@@ -89,95 +88,27 @@ public class Main {
         }
     }
 
-    //  ClassroomManager.getInstance()  -> returns the only Classroom Manager Object
-    //  Handles all functionalities in the application
-
-    //  addClassroom,removeClassroom,listClassrooms,
-    //  enrollStudent,listStudentsInClassroom.
-    //  scheduleAssignment,submitAssignment
-
-
-    private static void addClassroom() {
-        System.out.print("Enter classroom name: ");
-        String name = scanner.nextLine();
-        try {
-            ClassroomManager.getInstance().addClassroom(name);
-        } catch (IllegalArgumentException e) {
-            LOGGER.warning("Failed to add classroom: " + e.getMessage());
-        }
+    private static void addClassroom(String name) {
+        ClassroomManager.getInstance().addClassroom(name);
+        System.out.println("Classroom " + name + " has been created.");
+        LOGGER.info("Classroom added: " + name);
     }
 
-    private static void removeClassroom() {
-        System.out.print("Enter classroom name to remove: ");
-        String name = scanner.nextLine();
-        ClassroomManager.getInstance().removeClassroom(name);
-        LOGGER.info("Classroom removed: " + name);
+    private static void addStudent(String studentId, String className) {
+        ClassroomManager.getInstance().enrollStudent(studentId, "Student " + studentId, className);
+        System.out.println("Student " + studentId + " has been enrolled in " + className + ".");
+        LOGGER.info("Student " + studentId + " enrolled in " + className);
     }
 
-    private static void listClassrooms() {
-        List<String> classrooms = ClassroomManager.getInstance().listClassrooms();
-        if (!classrooms.isEmpty()) {
-            System.out.println("Classrooms:");
-            for (String classroom : classrooms) {
-                System.out.println("- " + classroom);
-            }
-        } else {
-            LOGGER.warning("No classrooms available.");
-        }
+    private static void scheduleAssignment(String className, String assignmentDetails) {
+        ClassroomManager.getInstance().scheduleAssignment(className, "Assignment", assignmentDetails);
+        System.out.println("Assignment for " + className + " has been scheduled.");
+        LOGGER.info("Assignment scheduled for " + className);
     }
 
-    private static void enrollStudent() {
-        System.out.print("Enter student ID: ");
-        String id = scanner.nextLine();
-        System.out.print("Enter student name: ");
-        String name = scanner.nextLine();
-        System.out.print("Enter classroom name: ");
-        String classroom = scanner.nextLine();
-
-        ClassroomManager.getInstance().enrollStudent(id, name, classroom);
-        LOGGER.info("Student '" + name + "' successfully enrolled in '" + classroom + "'.");
-    }
-
-    private static void listStudentsInClassroom() {
-        System.out.print("Enter classroom name: ");
-        String classroom = scanner.nextLine();
-
-        List<Student> students = ClassroomManager.getInstance().listStudentsInClassroom(classroom);
-        if (!students.isEmpty()) {
-            System.out.println("Students in " + classroom + ":");
-            for (Student student : students) {
-                System.out.println("- ID: " + student.getId() + ", Name: " + student.getName());
-            }
-        } else {
-            LOGGER.warning("No students enrolled in " + classroom + ".");
-        }
-    }
-
-    private static void scheduleAssignment() {
-        System.out.print("Enter classroom name: ");
-        String classroom = scanner.nextLine();
-        System.out.print("Enter assignment name: ");
-        String name = scanner.nextLine();
-        System.out.print("Enter assignment details: ");
-        String details = scanner.nextLine();
-
-        ClassroomManager.getInstance().scheduleAssignment(classroom, name, details);
-        LOGGER.info("Assignment '" + name + "' scheduled for '" + classroom + "' successfully.");
-    }
-
-    private static void submitAssignment() {
-        System.out.print("Enter student ID: ");
-        String studentId = scanner.nextLine();
-        System.out.print("Enter classroom name: ");
-        String classroom = scanner.nextLine();
-        System.out.print("Enter assignment name: ");
-        String assignment = scanner.nextLine();
-
-        try {
-            ClassroomManager.getInstance().submitAssignment(studentId, classroom, assignment);
-            LOGGER.info("Assignment submitted: Student " + studentId + ", Classroom " + classroom + ", Assignment " + assignment);
-        } catch (IllegalArgumentException e) {
-            LOGGER.warning("Failed to submit assignment: " + e.getMessage());
-        }
+    private static void submitAssignment(String studentId, String className, String assignmentDetails) {
+        ClassroomManager.getInstance().submitAssignment(studentId, className, "Assignment");
+        System.out.println("Assignment submitted by Student " + studentId + " in " + className + ".");
+        LOGGER.info("Assignment submitted by Student " + studentId + " in " + className);
     }
 }

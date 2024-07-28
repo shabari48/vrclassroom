@@ -25,12 +25,7 @@ public class Classroom {
             throw new IllegalArgumentException("Student with ID " + student.getId() + " is already enrolled in this classroom.");
         }
         students.add(student);
-    }
-
-    public void removeStudent(String studentId) {
-        if (!students.removeIf(s -> s.getId().equals(studentId))) {
-            throw new IllegalArgumentException("Student with ID " + studentId + " is not enrolled in this classroom.");
-        }
+        LOGGER.info("Student " + student.getId() + " added to classroom " + name);
     }
 
     public List<Student> listStudents() {
@@ -39,10 +34,11 @@ public class Classroom {
 
     public void addAssignment(Assignment assignment) {
         if (assignments.stream().anyMatch(a -> a.getName().equals(assignment.getName()))) {
-            LOGGER.warning("Attempt to add already existing assignemnt"+assignment.getName());
+            LOGGER.warning("Attempt to add already existing assignment " + assignment.getName());
             throw new IllegalArgumentException("Assignment '" + assignment.getName() + "' already exists in this classroom.");
         }
         assignments.add(assignment);
+        LOGGER.info("Assignment " + assignment.getName() + " added to classroom " + name);
     }
 
     public List<Assignment> listAssignments() {
