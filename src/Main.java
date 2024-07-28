@@ -39,7 +39,7 @@ public class Main {
         while (true) {
             System.out.print("\nEnter command: ");
             String input = scanner.nextLine().trim();
-            String[] parts = input.split("\\s+", 3);
+            String[] parts = input.split("\\s+", 4);
 
             try {
                 switch (parts[0].toLowerCase()) {
