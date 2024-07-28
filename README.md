@@ -1,73 +1,86 @@
-# Exercise 1 
-# Design Patterns
+# Exercise 1
+# Design Patterns 
 
 ## 1. Creational Patterns
 
 ### 1.1 Factory Pattern
-
 **Definition:** Creates objects without specifying the exact class to create.
 
 **Use Case:** "Flexible Payment Processing System"
 
-**Description:** Defines a PaymentGateway interface with concrete implementations. A PaymentGatewayFactory creates appropriate objects based on user input.
+**Description:** 
+- Defines a `PaymentGateway` interface with methods like `processPayment()` and `getPaymentMethod()`.
+- Concrete classes: `CreditCardPayment` and `BankTransferPayment` implement `PaymentGateway`.
+- `PaymentGatewayFactory` class with a `createPaymentGateway()` method to instantiate payment objects.
 
-**How it works:** User selects a payment method, factory creates the corresponding object, which processes the payment.
+**How it works:** User selects a payment method, `PaymentGatewayFactory` creates the corresponding object, which processes the payment.
 
 ### 1.2 Singleton Pattern
-
 **Definition:** Ensures a class has only one instance with global access.
 
 **Use Case:** "Global In-Memory Cache Management"
 
-**Description:** Implements a Cache class with private constructor and static instance. Provides methods for data storage and retrieval.
+**Description:** 
+- `Cache` class with private constructor and `private static Cache instance`.
+- Public `getInstance()` method for accessing the single instance.
+- Methods like `put()`, `get()`, and `clear()` for cache operations.
 
-**How it works:** getInstance() method returns the single instance, allowing global access to the cache.
+**How it works:** `getInstance()` method returns the single instance, allowing global access to the cache.
 
 ## 2. Behavioral Patterns
 
 ### 2.1 Observer Pattern
-
 **Definition:** Defines a subscription mechanism to notify multiple objects about events.
 
 **Use Case:** "Real-time YouTube Video Upload Notification System"
 
-**Description:** Defines Observer and Subject interfaces. YouTubeChannel notifies Subscribers of new uploads.
+**Description:** 
+- `Observer` interface with `update()` method.
+- `Subject` interface with `registerObserver()`, `removeObserver()`, and `notifyObservers()` methods.
+- `YouTubeChannel` class implements `Subject`.
+- `Subscriber` class implements `Observer`.
 
-**How it works:** Subscribers register with a channel. When a new video is uploaded, all subscribers are notified.
+**How it works:** Subscribers register with a channel. When a new video is uploaded, all subscribers are notified via their `update()` method.
 
 ### 2.2 State Pattern
-
 **Definition:** Allows an object to alter its behavior when its internal state changes.
 
 **Use Case:** "Dynamic Vending Machine Operation Management"
 
-**Description:** Defines different states for a vending machine, each implementing a common State interface.
+**Description:** 
+- `State` interface with methods like `selectProduct()`, `insertMoney()`, `dispense()`, and `cancel()`.
+- Concrete state classes: `NoSelectionState`, `HasSelectionState`, `HasMoneyState`, `DispensedState`.
+- `VendingMachine` class that maintains current state and delegates operations to it.
 
-**How it works:** VendingMachine delegates operations to its current state object, which changes based on actions performed.
+**How it works:** `VendingMachine` delegates operations to its current state object, which changes based on actions performed.
 
 ## 3. Structural Patterns
 
 ### 3.1 Adapter Pattern
-
 **Definition:** Allows objects with incompatible interfaces to collaborate.
 
 **Use Case:** "Unified Music Playback System for Multiple Audio Formats"
 
-**Description:** Creates adapters for different music sources (VinylRecord, DigitalAudioFile) to conform to a StandardTrack interface.
+**Description:** 
+- `StandardTrack` interface with methods like `getTitle()`, `getArtist()`, `play()`.
+- `VinylRecord` and `DigitalAudioFile` classes with incompatible interfaces.
+- Adapter classes: `VinylAdapter` and `DigitalAudioAdapter` implementing `StandardTrack`.
 
-**How it works:** Adapters wrap specific music sources, translating method calls to the common interface.
+**How it works:** Adapters wrap specific music sources, translating method calls to the common `StandardTrack` interface.
 
 ### 3.2 Composite Pattern
-
 **Definition:** Composes objects into tree structures to represent part-whole hierarchies.
 
 **Use Case:** "Hierarchical File System Structure Management"
 
-**Description:** Defines a common FileSystemComponent interface for both File and Directory classes.
+**Description:** 
+- `FileSystemComponent` interface with methods like `print()` and `getSize()`.
+- `File` class implements `FileSystemComponent` (leaf node).
+- `Directory` class implements `FileSystemComponent` and can contain other `FileSystemComponent` objects (composite node).
 
-**How it works:** Directories can contain files and other directories, allowing for a nested structure treated uniformly.
+**How it works:** Directories can contain files and other directories, allowing for a nested structure. Both files and directories are treated uniformly through the `FileSystemComponent` interface.
 
-These patterns provide solutions to common software design problems, promoting code reusability, flexibility, and maintainability.
+These patterns provide solutions to common software design problems, promoting code reusability, flexibility, and maintainability. Each pattern addresses specific challenges in software design and can be applied in various contexts beyond the examples provided here.
 
 
 # Exercise 2
